@@ -828,6 +828,30 @@ function CodeWorkspace() {
           </section>
         </main>
 
+        {/* Live website preview */}
+        {previewOpen && (
+          <section className="fixed inset-y-0 end-0 z-30 flex w-full flex-col border-s border-glass-border bg-card md:static md:w-[38%] md:min-w-[320px]">
+            <div className="flex items-center gap-2 border-b border-glass-border px-3 py-2">
+              <Eye className="h-4 w-4 text-primary" />
+              <span className="text-sm font-semibold">{t("Live preview", "المعاينة الحية")}</span>
+              <span className="truncate font-mono text-[11px] text-muted-foreground">site/index.html</span>
+              <button type="button" onClick={() => setPreviewKey((k) => k + 1)} className="ms-auto rounded p-1 hover:bg-accent" aria-label="refresh preview">
+                <Play className="h-4 w-4" />
+              </button>
+              <button type="button" onClick={() => setPreviewOpen(false)} className="rounded p-1 hover:bg-accent" aria-label="close preview">
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            {previewHtml ? (
+              <iframe key={previewKey} title="site preview" sandbox="allow-scripts" srcDoc={previewHtml} className="min-h-0 flex-1 bg-white" />
+            ) : (
+              <div className="flex flex-1 items-center justify-center p-6 text-center text-xs text-muted-foreground">
+                {t("No site/index.html yet — ask the agent to build one.", "لا يوجد site/index.html بعد — اطلب من الوكيل بناء موقع.")}
+              </div>
+            )}
+          </section>
+        )}
+
         {/* AI panel */}
         {aiOpen && (
           <aside className="fixed inset-y-0 end-0 z-30 flex w-full max-w-md flex-col border-s border-glass-border bg-card/90 backdrop-blur-2xl md:static md:w-96 md:bg-card/60">
@@ -838,6 +862,25 @@ function CodeWorkspace() {
                 <X className="h-4 w-4" />
               </button>
             </div>
+            <form
+              className="mx-3 mt-3 rounded-xl border border-primary/40 bg-primary/5 p-2"
+              onSubmit={(e) => { e.preventDefault(); void runAgent(); }}
+            >
+              <p className="mb-1.5 flex items-center gap-1.5 text-[11px] font-semibold text-primary">
+                <Sparkles className="h-3.5 w-3.5" /> {t("Agent — build a website", "الوكيل — ابنِ موقعاً")}
+              </p>
+              <textarea
+                value={agentPrompt}
+                onChange={(e) => setAgentPrompt(e.target.value)}
+                rows={2}
+                placeholder={t("e.g. Build a landing page for a coffee shop with a menu and contact form", "مثال: ابنِ صفحة هبوط لمقهى مع قائمة ونموذج تواصل")}
+                className="w-full resize-none rounded-md border border-glass-border bg-background/40 px-2 py-1.5 text-xs outline-none focus:border-primary/60"
+              />
+              <button type="submit" disabled={aiBusy || !agentPrompt.trim()} className="btn-hero mt-1.5 w-full !py-1.5 !text-xs disabled:opacity-50">
+                {aiBusy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Wand2 className="h-3.5 w-3.5" />}
+                {t("Build & preview", "ابنِ وعاين")}
+              </button>
+            </form>
             <div className="grid grid-cols-3 gap-2 p-3">
               <button type="button" disabled={aiBusy || !activePath} onClick={() => void askAi("explain")} className="btn-ghost !flex-col !gap-1 !px-2 !py-2 !text-xs disabled:opacity-50">
                 <Bot className="h-4 w-4" /> {t("Explain", "اشرح")}
