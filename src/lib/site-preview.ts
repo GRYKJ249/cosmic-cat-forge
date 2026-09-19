@@ -11,9 +11,9 @@ export function parseAgentFiles(output: string): FileLike[] {
   const files: FileLike[] = [];
   let m: RegExpExecArray | null;
   while ((m = re.exec(output))) {
-    const path = m[1].trim().replace(/^\/+/, "");
+    const path = (m[1] ?? "").trim().replace(/^\/+/, "");
     if (!path || path.includes("..")) continue;
-    files.push({ path, content: m[2] });
+    files.push({ path, content: m[2] ?? "" });
   }
   return files;
 }

@@ -531,7 +531,7 @@ function CodeWorkspace() {
       });
       await queryClient.invalidateQueries({ queryKey: ["workspace-files", user.id] });
       setExtraFolders((s) => new Set(s).add("site"));
-      openFile(generated.find((f) => f.path === "site/index.html")?.path ?? generated[0].path);
+      openFile(generated.find((f) => f.path === "site/index.html")?.path ?? generated[0]!.path);
       setPreviewKey((k) => k + 1);
       setPreviewOpen(true);
       setAgentPrompt("");
