@@ -10,7 +10,7 @@ const replies: Record<string, string> = {
   code: "The workspace runs JavaScript and Python in a browser sandbox with a live terminal. Type /fix and I'll patch your bugs.",
   image: "The studio turns text into art with style presets, negative prompts and seed control. Inpainting included.",
   security: "Real accounts with OTP email verification, hashed passwords and a session tracker you can revoke from anywhere.",
-  who: "Opera AI was engineered from the ground up by Mahgoub Abdallah Mohammed Osman.",
+  who: "Opera AI was engineered from the ground up by Gry KJ.",
 };
 
 function answer(q: string) {

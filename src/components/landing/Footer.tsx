@@ -46,7 +46,7 @@ export function Footer() {
         </div>
 
         <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-glass-border pt-6 text-xs text-muted-foreground sm:flex-row">
-          <p>© {new Date().getFullYear()} Opera AI. Developed by Mahgoub Abdallah Mohammed Osman.</p>
+          <p>© {new Date().getFullYear()} Opera AI. Developed by Gry KJ.</p>
           <p className="font-mono">v0.1 · landing orbit</p>
         </div>
       </div>

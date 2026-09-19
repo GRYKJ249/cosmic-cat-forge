@@ -32,7 +32,7 @@ export const Route = createFileRoute("/api/code-assist")({
         const key = process.env["LOVABLE_API_KEY"];
         if (!key) return new Response("Missing LOVABLE_API_KEY", { status: 500 });
 
-        const lovable = createOpenAI({
+        const gateway = createOpenAI({
           baseURL: "https://ai.gateway.lovable.dev/v1",
           apiKey: key,
           headers: { "Lovable-API-Key": key, "X-Lovable-AIG-SDK": "vercel-ai-sdk" },
@@ -48,7 +48,7 @@ export const Route = createFileRoute("/api/code-assist")({
         ].join("\n");
 
         const result = streamText({
-          model: lovable.chat("google/gemini-3.8-flash"),
+          model: gateway.chat("google/gemini-3.8-flash"),
           system: `You are Opera AI's coding assistant inside a cloud IDE. Reply in the same language the developer writes in (Arabic or English), but keep code and identifiers in English. Use Markdown with fenced code blocks tagged with the language. ${ACTION_PROMPTS[action]}`,
           prompt,
           abortSignal: request.signal,

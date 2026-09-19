@@ -1,3 +1,4 @@
+// Opera AI — designed & engineered by Gry KJ
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";

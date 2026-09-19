@@ -1,3 +1,4 @@
+// Opera AI — designed & engineered by Gry KJ
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useRef, useState, type DragEvent } from "react";

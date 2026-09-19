@@ -41,7 +41,7 @@ export const Route = createFileRoute("/api/chat")({
 
         const initialRunId = getLovableAiGatewayRunId(request);
         const runIdFetch = createLovableAiGatewayRunIdFetch(initialRunId);
-        const lovable = createOpenAI({
+        const gateway = createOpenAI({
           baseURL: "https://ai.gateway.lovable.dev/v1",
           apiKey: key,
           headers: { "Lovable-API-Key": key, "X-Lovable-AIG-SDK": "vercel-ai-sdk" },
@@ -49,7 +49,7 @@ export const Route = createFileRoute("/api/chat")({
         });
 
         const result = streamText({
-          model: lovable.responses("openai/gpt-6-astra"),
+          model: gateway.responses("openai/gpt-6-astra"),
           system: SYSTEM_PROMPT,
           messages: await convertToModelMessages(messages as UIMessage[]),
           abortSignal: request.signal,

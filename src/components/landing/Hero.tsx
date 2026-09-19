@@ -29,7 +29,7 @@ export function Hero() {
             </a>
           </div>
           <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.25em] text-muted-foreground/70">
-            Engineered by Mahgoub Abdallah Mohammed Osman
+            Engineered by Gry KJ
           </p>
         </div>
 

@@ -1,3 +1,4 @@
+// Opera AI — designed & engineered by Gry KJ
 /**
  * Opera AI — 100-palette color engine.
  * 10 families × 10 hues. Every palette derives a full semantic token set (oklch)

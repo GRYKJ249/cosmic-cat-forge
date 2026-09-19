@@ -1,3 +1,4 @@
+// Opera AI — designed & engineered by Gry KJ
 import { createFileRoute } from "@tanstack/react-router";
 import { useReveal } from "@/hooks/use-reveal";
 import { GlobeBackground } from "@/components/landing/GlobeBackground";
@@ -15,7 +16,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Opera AI — Build at the speed of orbit" },
-      { name: "description", content: "Opera AI: a spatial AI ecosystem with a 3D Earth landing, 100-palette color engine, AI chat workspace, cloud IDE and creative studio. Developed by Mahgoub Abdallah Mohammed Osman." },
+      { name: "description", content: "Opera AI: a spatial AI ecosystem with a 3D Earth landing, 100-palette color engine, AI chat workspace, cloud IDE and creative studio. Developed by Gry KJ." },
       { property: "og:title", content: "Opera AI — Build at the speed of orbit" },
       { property: "og:description", content: "Cloud intelligence, immersive 3D environments, enterprise-grade security and multi-modal creation — guided by the Opera AI space cat." },
       { property: "og:type", content: "website" },
