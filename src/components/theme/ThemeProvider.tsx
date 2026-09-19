@@ -20,8 +20,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) setId(saved);
+    // The site keeps its signature palette; the 100 colors live in the spectrum section.
     setHC(localStorage.getItem(A11Y_KEY) === "1");
     setHydrated(true);
   }, []);

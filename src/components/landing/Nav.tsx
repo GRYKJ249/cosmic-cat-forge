@@ -12,7 +12,7 @@ const links = [
   { href: "#workspace", label: "Workspace" },
   { href: "#security", label: "Security" },
   { href: "#studio", label: "Studio" },
-  { href: "#themes", label: "Themes" },
+  { href: "#themes", label: "Colors" },
 ];
 
 export function Nav() {
@@ -86,7 +86,7 @@ export function Nav() {
           </button>
           <a href="#themes" onClick={click} className="btn-ghost !px-3 !py-2 text-xs md:!px-4">
             <Palette className="h-4 w-4" />
-            <span className="hidden sm:inline">100 Themes</span>
+            <span className="hidden sm:inline">100 Colors</span>
           </a>
           {session ? (
             <>
