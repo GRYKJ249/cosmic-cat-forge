@@ -36,6 +36,13 @@
       "when": 1789812025020,
       "tag": "0004_opera_ai_core_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1789812037905,
+      "tag": "0005_harden_function_grants",
+      "breakpoints": true
     }
   ]
 }
