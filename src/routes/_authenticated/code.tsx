@@ -9,6 +9,7 @@ import {
   ChevronDown,
   ChevronRight,
   Download,
+  Eye,
   FileCode2,
   FilePlus2,
   Folder,
@@ -38,6 +39,7 @@ import {
   languageFromPath,
   type TerminalLine,
 } from "@/lib/code-runner";
+import { buildSiteHtml, hasSite, parseAgentFiles } from "@/lib/site-preview";
 
 export const Route = createFileRoute("/_authenticated/code")({
   head: () => ({
@@ -176,6 +178,9 @@ function CodeWorkspace() {
   const [aiQuestion, setAiQuestion] = useState("");
   const [saving, setSaving] = useState(false);
   const [dragOver, setDragOver] = useState(false);
+  const [agentPrompt, setAgentPrompt] = useState("");
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewKey, setPreviewKey] = useState(0);
 
   const runnerRef = useRef<HTMLIFrameElement | null>(null);
   const runIdRef = useRef<string | null>(null);
@@ -481,6 +486,67 @@ function CodeWorkspace() {
     }
   };
 
+  // ---------- Agent: builds whole websites into workspace files ----------
+  const runAgent = async () => {
+    if (!user || !agentPrompt.trim()) return;
+    aiAbort.current?.abort();
+    const controller = new AbortController();
+    aiAbort.current = controller;
+    setAiOpen(true);
+    setAiBusy(true);
+    setAiOutput("");
+    try {
+      const project = files
+        .filter((f) => f.path.startsWith("site/"))
+        .slice(0, 40)
+        .map((f) => ({ path: f.path, content: (drafts[f.path] ?? f.content).slice(0, 40_000) }));
+      const res = await fetch("/api/code-assist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
+        body: JSON.stringify({ action: "build", code: "", filename: "site/index.html", language: "HTML", instruction: agentPrompt, project }),
+      });
+      if (!res.ok || !res.body) throw new Error(await res.text());
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let acc = "";
+      for (;;) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        acc += decoder.decode(value, { stream: true });
+        setAiOutput(acc);
+      }
+      const generated = parseAgentFiles(acc);
+      if (!generated.length) {
+        toast.error(t("The agent returned no files", "لم يُرجع الوكيل أي ملفات"));
+        return;
+      }
+      const rows = generated.map((f) => ({ user_id: user.id, path: f.path, content: f.content }));
+      const { error } = await supabase.from("workspace_files").upsert(rows, { onConflict: "user_id,path" });
+      if (error) throw error;
+      setDrafts((d) => {
+        const n = { ...d };
+        generated.forEach((f) => delete n[f.path]);
+        return n;
+      });
+      await queryClient.invalidateQueries({ queryKey: ["workspace-files", user.id] });
+      setExtraFolders((s) => new Set(s).add("site"));
+      openFile(generated.find((f) => f.path === "site/index.html")?.path ?? generated[0].path);
+      setPreviewKey((k) => k + 1);
+      setPreviewOpen(true);
+      setAgentPrompt("");
+      toast.success(t(`Agent wrote ${generated.length} file(s)`, `كتب الوكيل ${generated.length} ملف`));
+    } catch (err) {
+      if ((err as Error).name !== "AbortError") toast.error((err as Error).message || t("Agent failed", "فشل الوكيل"));
+    } finally {
+      setAiBusy(false);
+    }
+  };
+
+  const siteFiles = useMemo(() => files.map((f) => ({ path: f.path, content: drafts[f.path] ?? f.content })), [files, drafts]);
+  const siteAvailable = hasSite(siteFiles);
+  const previewHtml = useMemo(() => (previewOpen ? buildSiteHtml(siteFiles) : null), [previewOpen, siteFiles, previewKey]);
+
   const firstCodeBlock = useMemo(() => {
     const m = aiOutput.match(/```[\w+-]*\n([\s\S]*?)```/);
     return m?.[1] ?? null;
@@ -610,6 +676,16 @@ function CodeWorkspace() {
         <button type="button" onClick={() => void downloadZip()} className="btn-ghost !gap-1.5 !px-3 !py-1.5 !text-xs">
           <Download className="h-3.5 w-3.5" />
           <span className="hidden sm:inline">ZIP</span>
+        </button>
+        <button
+          type="button"
+          disabled={!siteAvailable}
+          onClick={() => { setPreviewKey((k) => k + 1); setPreviewOpen((o) => !o); }}
+          className={`btn-ghost !gap-1.5 !px-3 !py-1.5 !text-xs disabled:opacity-40 ${previewOpen ? "!border-primary/60 !text-primary" : ""}`}
+          title={siteAvailable ? "" : t("Ask the agent to build a site first", "اطلب من الوكيل بناء موقع أولاً")}
+        >
+          <Eye className="h-3.5 w-3.5" />
+          <span className="hidden sm:inline">{t("Preview", "معاينة")}</span>
         </button>
         <div className="ms-auto flex items-center gap-2">
           <select
